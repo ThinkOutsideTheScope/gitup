@@ -1,6 +1,13 @@
 # gitup
 
-A Minecraft mod used for backing up clients and servers using Git.
+A Minecraft mod used for backing up clients and servers using Git™.
+
+Git and the Git logo are trademarks of the Software Freedom Conservancy.
+This project is independent and is not associated with Git or the Git project in any way.
+
+Gitup depends on the Git CLI being installed and on the user's PATH, and also requires for the game instance to have an already configured Git repo with push privledges.
+All credentials are handled by the Git CLI itself and is not read or stored by Gitup.
+All network access comes from Git commands using the repos already configured for that repository.
 
 # How to use
 
