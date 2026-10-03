@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Saver {
     public void doServerBackup(MinecraftServer server) {
+        Gitup.LOGGER.info("Attempting to start a server backup");
         GitupConfig config = Gitup.CONFIG;
         if (server != null) {
             CompletableFuture<Boolean> serverSavedFuture = Util.saveServer(server);
