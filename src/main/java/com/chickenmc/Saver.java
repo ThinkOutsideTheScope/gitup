@@ -3,7 +3,9 @@ package com.chickenmc;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 public class Saver {
@@ -25,9 +27,9 @@ public class Saver {
                 Gitup.LOGGER.error("'git add' exited with error code {}. Not backing up.", status);
                 return;
             }
-            boolean changes_made = (GitCommand.diff_index("HEAD", config.extraArgs.diff_index) == 1);
-            if (changes_made) {
-                status = GitCommand.commit(CommitMessageFormatter.format(config.commitMessageFormat), config.extraArgs.commit);
+            boolean changesMade = (GitCommand.diff_index("HEAD", config.extraArgs.diff_index) == 1);
+            if (changesMade) {
+                status = GitCommand.commit(Gitup.commitFormatter.format(LocalDateTime.now()), config.extraArgs.commit);
                 if (status != 0) {
                     Gitup.LOGGER.error("'git commit' exited with error code {}. Not backing up.", status);
                     return;
@@ -40,6 +42,9 @@ public class Saver {
             }
         } catch (IOException e) {
             Gitup.LOGGER.error("Git command failed with IOException", e);
+            return;
+        } catch (DateTimeException e) {
+            Gitup.LOGGER.error("Parsing commit message format failed with a DateTimeException", e);
             return;
         }
     }

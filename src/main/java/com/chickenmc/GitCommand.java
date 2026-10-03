@@ -16,7 +16,7 @@ public class GitCommand {
         return Util.execShellCommand(((extraArgs == null) ? "git add " + inputParam : "git add " + inputParam + " " + extraArgs), TIMEOUT, workingDirectory);
     }
     public static int commit(String message, String extraArgs, File workingDirectory) throws IOException {
-        return Util.execShellCommand(((extraArgs == null) ? "git commit -m " + message : "git commit -m " + message + " " + extraArgs), TIMEOUT, workingDirectory);
+        return Util.execShellCommand(((extraArgs == null) ? "git commit -m \"" + message + "\"" : "git commit -m \"" + message + "\" " + extraArgs), TIMEOUT, workingDirectory);
     }
     public static int push(String extraArgs, File workingDirectory) throws IOException {
         return Util.execShellCommand(((extraArgs == null) ? "git push" : "git push " + extraArgs), TIMEOUT, workingDirectory);
