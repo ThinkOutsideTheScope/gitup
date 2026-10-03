@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "gitup",
+	"version": "${version}",
+	"name": "gitup",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"eeee1"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/gitup/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.chickenmc.Gitup"
+		],
+		"client": [
+			"com.chickenmc.client.GitupClient"
+		]
+	},
+	"mixins": [
+		"gitup.mixins.json",
+		{
+			"config": "gitup.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
