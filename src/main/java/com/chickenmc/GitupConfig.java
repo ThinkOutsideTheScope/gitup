@@ -35,4 +35,7 @@ public class GitupConfig implements ConfigData {
     public boolean requireLevelSavedForCommit = false;
 
     public String commitMessageFormat = "%i/%d/%y-%h:%m:%s";
+
+    @ConfigEntry.BoundedDiscrete(min = 0L, max = Long.MAX_VALUE)
+    public long lastPushTimestamp = 0L;
 }

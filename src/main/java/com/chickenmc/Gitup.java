@@ -4,6 +4,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.time.Instant;
 
 public class Gitup implements ModInitializer {
 	public static final String MOD_ID = "gitup";
@@ -28,7 +30,8 @@ public class Gitup implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static GitupConfig CONFIG;
-	public static long CONFIG_PUSH_INTERVAL_MS = 0L;
+	public static long CONFIG_PUSH_INTERVAL_S = 0L;
+	public static long NEXT_SAVE_TIMESTAMP = 0L;
 
 	public Saver saver = new Saver();
 
@@ -47,8 +50,13 @@ public class Gitup implements ModInitializer {
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("Config is invalid", e);
 		}
-		CONFIG_PUSH_INTERVAL_MS = Util.convertToMs(CONFIG.pushInterval, CONFIG.pushIntervalUnit);
+		CONFIG_PUSH_INTERVAL_S = Util.convertToSeconds(CONFIG.pushInterval, CONFIG.pushIntervalUnit);
 		if (CONFIG.pushInterval != 0L) ServerTickEvents.END_SERVER_TICK.register(saver::serverBackupCheckTick); // no need to register if saving is disabled
+		NEXT_SAVE_TIMESTAMP = Instant.now().getEpochSecond() + CONFIG_PUSH_INTERVAL_S;
+
+		ServerLifecycleEvents.SERVER_STOPPING.register(_ -> {
+			AutoConfig.getConfigHolder(GitupConfig.class).save();
+		});
 	}
 
 	public static Identifier id(String path) {

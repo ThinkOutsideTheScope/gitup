@@ -3,15 +3,17 @@ package com.chickenmc;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 public class Saver {
-    private long lastExecutionTime = 0L;
     public void doServerBackup(MinecraftServer server) {
         GitupConfig config = Gitup.CONFIG;
-        CompletableFuture<Boolean> serverSavedFuture = Util.saveServer(server);
-        boolean serverSaved = serverSavedFuture.join();
-        if (config.requireLevelSavedForCommit && !serverSaved) return;
+        if (server != null) {
+            CompletableFuture<Boolean> serverSavedFuture = Util.saveServer(server);
+            boolean serverSaved = serverSavedFuture.join();
+            if (config.requireLevelSavedForCommit && !serverSaved) return;
+        }
         try {
             int status = GitCommand.fetch(config.extraArgs.fetch);
             if (status != 0) {
@@ -41,13 +43,14 @@ public class Saver {
         }
     }
     public void serverBackupCheckTick(MinecraftServer server) {
-        long currentTime = net.minecraft.util.Util.getMillis();
-        if (lastExecutionTime == 0L) {
-            lastExecutionTime = currentTime;
+        long currentTime = Instant.now().getEpochSecond();
+        if (Gitup.CONFIG.lastPushTimestamp == 0L) {
+            Gitup.CONFIG.lastPushTimestamp = currentTime;
             return;
         }
-        if (currentTime - lastExecutionTime >= Gitup.CONFIG_PUSH_INTERVAL_MS) {
-            lastExecutionTime += Gitup.CONFIG_PUSH_INTERVAL_MS;
+        if (currentTime >= Gitup.NEXT_SAVE_TIMESTAMP) {
+            Gitup.CONFIG.lastPushTimestamp = Gitup.NEXT_SAVE_TIMESTAMP;
+            Gitup.NEXT_SAVE_TIMESTAMP += Gitup.CONFIG_PUSH_INTERVAL_S;
             doServerBackup(server);
         }
     }

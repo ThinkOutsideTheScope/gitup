@@ -55,25 +55,25 @@ public class Util {
     private static boolean verifyConfigPushInterval(GitupConfig cfg) {
         return switch (cfg.pushIntervalUnit) {
             case SECONDS -> true;
-            case MINUTES -> (cfg.pushInterval < 153722867280912L);
-            case HOURS   -> (cfg.pushInterval < 2562047788015L);
-            case DAYS    -> (cfg.pushInterval < 106751991167L);
-            case WEEKS   -> (cfg.pushInterval < 15250284452L);
-            case YEARS   -> (cfg.pushInterval < 292277024L);
+            case MINUTES -> (cfg.pushInterval < 153722867280912930L);
+            case HOURS   -> (cfg.pushInterval < 2562047788015215L);
+            case DAYS    -> (cfg.pushInterval < 106751991167300L);
+            case WEEKS   -> (cfg.pushInterval < 15250284452471L);
+            case YEARS   -> (cfg.pushInterval < 292471208677L);
         };
     }
     public static void verifyConfig(GitupConfig cfg) throws IllegalArgumentException {
         boolean configPushIntervalIsValue = verifyConfigPushInterval(cfg);
         if (!configPushIntervalIsValue) throw new IllegalArgumentException("Error in Gitup config: pushInterval exceeds the maximum value for its unit");
     }
-    public static long convertToMs(long pushInterval, GitupConfig.DurationType durationType) {
+    public static long convertToSeconds(long pushInterval, GitupConfig.DurationType durationType) {
         return switch (durationType) {
-            case SECONDS -> (pushInterval * 1000L);
-            case MINUTES -> (pushInterval * 60000L);
-            case HOURS   -> (pushInterval * 3600000L);
-            case DAYS    -> (pushInterval * 86400000L);
-            case WEEKS   -> (pushInterval * 604800000L);
-            case YEARS   -> (pushInterval * 31556952000L);
+            case SECONDS -> pushInterval;
+            case MINUTES -> (pushInterval * 60L);
+            case HOURS   -> (pushInterval * 3600L);
+            case DAYS    -> (pushInterval * 86400L);
+            case WEEKS   -> (pushInterval * 604800L);
+            case YEARS   -> (pushInterval * 31556952L);
         };
     }
 }
