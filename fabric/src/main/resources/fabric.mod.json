@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "net.chickenmc.gitup.Gitup"
         ]
     },
     "mixins": [
@@ -27,7 +27,8 @@
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "~${minecraft_version}",
-        "java": ">=${java_version}"
+        "java": ">=${java_version}",
+        "cloth-config": ">=15.0.0"
     },
     "suggests": {
         "another-mod": "*"
